@@ -3,7 +3,9 @@ use std::{
     sync::Arc,
 };
 
-use super::{value::Value, Address, Memory};
+use super::value::Value;
+
+pub type Address = u64;
 
 pub struct HeapMemory {
     pub data: HashMap<Address, Arc<Box<Value>>>,
@@ -13,15 +15,7 @@ impl HeapMemory {
     pub fn new(data: HashMap<Address, Arc<Box<Value>>>) -> Self {
         Self { data }
     }
-}
 
-impl Default for HeapMemory {
-    fn default() -> Self {
-        Self::new(HashMap::new())
-    }
-}
-
-impl Memory<Arc<Box<Value>>> for HeapMemory {
     fn set(&mut self, address: Address, value: Arc<Box<Value>>) -> Result<(), &'static str> {
         if let Vacant(e) = self.data.entry(address) {
             e.insert(value);
@@ -33,7 +27,7 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
     }
 
     fn put(&mut self, value: Arc<Box<Value>>) -> Result<Address, &'static str> {
-        let address= if self.data.is_empty() {
+        let address = if self.data.is_empty() {
             0
         } else {
             self.data.len() as Address + 1
@@ -53,14 +47,17 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
     }
 }
 
+impl Default for HeapMemory {
+    fn default() -> Self {
+        Self::new(HashMap::new())
+    }
+}
+
 #[cfg(test)]
 mod test {
     use std::sync::Arc;
 
-    use crate::{
-        memory::{value::Value, Memory},
-        vm::VM,
-    };
+    use crate::{memory::value::Value, vm::VM};
 
     #[test]
     fn test_heap_memory() {
