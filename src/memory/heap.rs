@@ -29,10 +29,13 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
         }
     }
 
-    fn put(&mut self, value: Arc<Box<Value>>) -> Result<&Address, &'static str> {
-        let address = self.data.len() + 1;
+    fn put(&mut self, value: Arc<Box<Value>>) -> Result<Address, &'static str> {
+        let address = self.data.len() as u64 + 1;
 
-
+        match self.set(address, value) {
+            Ok(_) => Ok(address),
+            Err(_) => Err("system breakdown")
+        }
     }
 
 
