@@ -3,13 +3,5 @@
 version = 3
 
 [[package]]
-name = "bytecode"
-version = "0.1.0"
-
-[[package]]
-name = "launcher"
-version = "0.1.0"
-
-[[package]]
 name = "tvm"
 version = "0.1.0"
