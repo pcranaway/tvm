@@ -1,4 +1,7 @@
-use std::{collections::{HashMap, hash_map::Entry::Vacant}, sync::Arc};
+use std::{
+    collections::{hash_map::Entry::Vacant, HashMap},
+    sync::Arc,
+};
 
 use super::{value::Value, Address, Memory};
 
@@ -34,10 +37,9 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
 
         match self.set(address, value) {
             Ok(_) => Ok(address),
-            Err(_) => Err("system breakdown")
+            Err(_) => Err("system breakdown"),
         }
     }
-
 
     fn get(&self, address: Address) -> Result<Arc<Box<Value>>, &'static str> {
         match self.data.get(&address) {
@@ -45,14 +47,16 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
             Some(v) => Ok(v.clone()),
         }
     }
-
 }
 
 #[cfg(test)]
 mod test {
     use std::sync::Arc;
 
-    use crate::{vm::VM, memory::{value::Value, Memory}};
+    use crate::{
+        memory::{value::Value, Memory},
+        vm::VM,
+    };
 
     #[test]
     fn test_heap_memory() {
@@ -65,12 +69,12 @@ mod test {
 
         let address = match lock.put(Arc::new(Box::new(data.clone()))) {
             Ok(v) => v,
-            Err(e) => panic!("{}", e)
+            Err(e) => panic!("{}", e),
         };
 
         let value = match lock.get(address) {
             Ok(v) => v,
-            Err(e) => panic!("{}", e)
+            Err(e) => panic!("{}", e),
         };
 
         assert_eq!(data, **value);
