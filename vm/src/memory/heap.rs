@@ -5,18 +5,18 @@ use std::{
 
 use super::value::Value;
 
-pub type Address = u64;
+pub type HeapAddress = u64;
 
 pub struct HeapMemory {
-    pub data: HashMap<Address, Arc<Box<Value>>>,
+    pub data: HashMap<HeapAddress, Arc<Box<Value>>>,
 }
 
 impl HeapMemory {
-    pub fn new(data: HashMap<Address, Arc<Box<Value>>>) -> Self {
+    pub fn new(data: HashMap<HeapAddress, Arc<Box<Value>>>) -> Self {
         Self { data }
     }
 
-    fn set(&mut self, address: Address, value: Arc<Box<Value>>) -> Result<(), &'static str> {
+    fn set(&mut self, address: HeapAddress, value: Arc<Box<Value>>) -> Result<(), &'static str> {
         if let Vacant(e) = self.data.entry(address) {
             e.insert(value);
 
@@ -26,11 +26,11 @@ impl HeapMemory {
         }
     }
 
-    fn put(&mut self, value: Arc<Box<Value>>) -> Result<Address, &'static str> {
+    fn put(&mut self, value: Arc<Box<Value>>) -> Result<HeapAddress, &'static str> {
         let address = if self.data.is_empty() {
             0
         } else {
-            self.data.len() as Address + 1
+            self.data.len() as HeapAddress + 1
         };
 
         match self.set(address, value) {
@@ -39,7 +39,7 @@ impl HeapMemory {
         }
     }
 
-    fn get(&self, address: Address) -> Result<Arc<Box<Value>>, &'static str> {
+    fn get(&self, address: HeapAddress) -> Result<Arc<Box<Value>>, &'static str> {
         match self.data.get(&address) {
             None => Err(""),
             Some(v) => Ok(v.clone()),
