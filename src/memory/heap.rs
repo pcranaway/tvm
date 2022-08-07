@@ -33,7 +33,11 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
     }
 
     fn put(&mut self, value: Arc<Box<Value>>) -> Result<Address, &'static str> {
-        let address = self.data.len() as u64 + 1;
+        let address= if self.data.is_empty() {
+            0
+        } else {
+            self.data.len() as Address + 1
+        };
 
         match self.set(address, value) {
             Ok(_) => Ok(address),
