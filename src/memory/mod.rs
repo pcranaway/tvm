@@ -7,7 +7,6 @@ pub trait Memory<V> {
     fn put(&mut self, value: V) -> Result<Address, &'static str>;
 
     fn get(&self, address: Address) -> Result<V, &'static str>;
-
 }
 
 pub mod heap;

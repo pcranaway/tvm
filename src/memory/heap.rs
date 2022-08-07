@@ -47,3 +47,32 @@ impl Memory<Arc<Box<Value>>> for HeapMemory {
     }
 
 }
+
+#[cfg(test)]
+mod test {
+    use std::sync::Arc;
+
+    use crate::{vm::VM, memory::{value::Value, Memory}};
+
+    #[test]
+    fn test_heap_memory() {
+        let data = Value::Int(20);
+
+        let vm = VM::default();
+
+        let heap = vm.heap;
+        let mut lock = heap.lock().unwrap();
+
+        let address = match lock.put(Arc::new(Box::new(data.clone()))) {
+            Ok(v) => v,
+            Err(e) => panic!("{}", e)
+        };
+
+        let value = match lock.get(address) {
+            Ok(v) => v,
+            Err(e) => panic!("{}", e)
+        };
+
+        assert_eq!(data, **value);
+    }
+}
